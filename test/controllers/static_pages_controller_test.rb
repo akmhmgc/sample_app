@@ -1,7 +1,6 @@
-require 'test_helper'
+require "test_helper"
 
 class StaticPagesControllerTest < ActionDispatch::IntegrationTest
-
   def setup
     @base_title = "Ruby on Rails Tutorial Sample App"
   end
@@ -15,7 +14,7 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     get static_pages_home_url
     assert_response :success
     # selector の中、中身のチェック
-    assert_select "title", "Home | #{@base_title}"
+    assert_select "title", @base_title
   end
 
   test "should get help" do
@@ -35,5 +34,4 @@ class StaticPagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "title", "Contact | #{@base_title}"
   end
-
 end
