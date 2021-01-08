@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   def new
+    #空のUserインスタンスが呼びだされる
     @user = User.new
   end
 
@@ -11,14 +12,17 @@ class UsersController < ApplicationController
     @user = User.new(user_params) 
     if @user.save
       flash[:success] = "Welcome to the Sample App!"
-      
+      # 新規ユーザーが登録された時点でログインセッションを保持(8.25)
+      log_in @user
       # redirect_to @user も同じ
       redirect_to user_url(@user)
     else
-      # /usersに POSTされた状態で new.html.erbがレンダー
+      # POSTされた状態で new.html.erbがレンダー
       render 'new'
     end
   end
+
+  
 
 
   # user_paramsはクラス内のみで呼び出し可能

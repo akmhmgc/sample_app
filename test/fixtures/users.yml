@@ -1,1 +1,6 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+# 8.2.2
+michael:
+  name: Michael Example
+  email: michael@example.com
+  # ここでhash化を行なってtest DBに格納している User.digestはUserのクラスメソッド
+  password_digest: <%= User.digest('password') %>

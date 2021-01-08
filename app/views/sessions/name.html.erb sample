@@ -1,0 +1,2 @@
+<h1><%= flash[:danger] %></h1>
+<h1><%= @king %></h1>
