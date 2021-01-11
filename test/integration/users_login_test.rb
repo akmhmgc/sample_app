@@ -3,7 +3,7 @@ require 'test_helper'
 class UsersLoginTest < ActionDispatch::IntegrationTest
 
   def setup
-    # model専用のfixture fileは自動的にモデルに使用されるクラスになる(User class)
+    # fixture file(users.yml)の呼び出し
     @user = users(:michael)
   end
 
@@ -27,6 +27,7 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     get login_path
     post login_path, params: { session: { email:    @user.email,
                                           password: 'password' } }
+                                      
     assert is_logged_in?
     assert_redirected_to @user
     follow_redirect!
@@ -40,10 +41,35 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_not is_logged_in?
     # destroyアクションの中でリダイレクトが指定されているの
     assert_redirected_to root_url
+    
+    # 2番目のウィンドウでログアウトをクリックするユーザーをシミュレートする
+    # 既にログアウトした状態でログアウトに関するリクエストを送ることができるかというテスト
+    delete logout_path
+    
     follow_redirect!
     assert_select "a[href=?]", login_path
     assert_select "a[href=?]", logout_path,      count: 0
     assert_select "a[href=?]", user_path(@user), count: 0
+  end
+
+  test "login with remembering" do
+    # test_helperより session_controlerのcreateメソッドが呼ばれる
+    log_in_as(@user, remember_me: '1')
+    # ログインした後にクッキーの値 = インスタンスのremember_tokenを確認
+    assert_equal cookies['remember_token'],assigns(:user).remember_token
+  end
+
+  test "login without remembering" do
+    # クッキーを保存してログイン
+    log_in_as(@user, remember_me: '1')
+    delete logout_path
+    # クッキーを削除してログイン
+    log_in_as(@user, remember_me: '0')
+    assert_empty cookies['remember_token']
+  end
+
+  test "hello test" do
+    get hello_path
   end
 
 end

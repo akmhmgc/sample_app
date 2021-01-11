@@ -3,4 +3,5 @@ michael:
   name: Michael Example
   email: michael@example.com
   # ここでhash化を行なってtest DBに格納している User.digestはUserのクラスメソッド
+  # 'passwordという文字列がハッシュ化されて保存されている'
   password_digest: <%= User.digest('password') %>

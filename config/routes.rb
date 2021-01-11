@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   get  '/signup',  to: 'users#new'
   post '/signup',  to: 'users#create'
 
+  get  '/hello',  to: 'sessions#hello'
+
   # get users/new, get users/1などのRESTフルセットを作成してくれる
   resources :users
 end
