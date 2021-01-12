@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
       log_in @user
       # paramsのチェックボックスが押されている場合はremember(user)を使用
       params[:session][:remember_me] == '1' ? remember(@user) : forget(@user)
-      redirect_to @user
+      redirect_back_or(@user)
     else
       # flash.nowで現在のアクションのみ有効になる
       flash.now[:danger] = 'Invalid email/password combination'
@@ -29,11 +29,6 @@ class SessionsController < ApplicationController
   # logoutのアクション
   def destroy
     log_out if logged_in?
-    redirect_to root_url
-  end
-
-  def hello
-    @hello = "はああい！！"
     redirect_to root_url
   end
 

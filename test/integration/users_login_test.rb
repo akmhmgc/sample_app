@@ -68,8 +68,4 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_empty cookies['remember_token']
   end
 
-  test "hello test" do
-    get hello_path
-  end
-
 end
