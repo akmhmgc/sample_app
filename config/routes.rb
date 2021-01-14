@@ -15,4 +15,6 @@ Rails.application.routes.draw do
   
   # get users/new, get users/1などのRESTフルセットを作成してくれる
   resources :users
+
+  resources :account_activations, only: [:edit]
 end
