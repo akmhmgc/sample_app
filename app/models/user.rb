@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  attr_accessor :remember_token, :activation_token
+  attr_accessor :remember_token, :activation_token, :reset_token
   before_save :downcase_email
   before_create :create_activation_digest # 最初のsave前に実行される
 
@@ -11,7 +11,9 @@ class User < ApplicationRecord
                     # 大文字と小文字に区別なく一意性を持たせる AAA@co.jp aaa@co.jpは同時登録不可
                     uniqueness: { case_sensitive: false }
 
+  #  新規作成時にはhas_secure_passwordにより空のパスワードは弾かれる
   has_secure_password
+  # 新規作成時以外は空でも弾かれることはない
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   # has_secure_passwordと同じ方法で、渡された文字列のハッシュ値を返すメソッド
@@ -56,6 +58,21 @@ class User < ApplicationRecord
   # 有効化用のメールを送信する
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
+  end
+
+  # パスワード再設定の属性を設定する
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update_columns(reset_digest:  User.digest(reset_token), reset_sent_at: Time.zone.now)
+  end
+
+  # パスワード再設定のメールを送信する
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
+  end
+
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
   end
 
   private
