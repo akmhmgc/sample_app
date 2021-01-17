@@ -22,3 +22,6 @@
 
 .byebug_history
 /spring/*.pid
+
+# アップロードされたテスト画像を無視する
+/public/uploads
