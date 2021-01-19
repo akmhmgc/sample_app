@@ -1,4 +1,5 @@
 class StaticPagesController < ApplicationController
+  protect_from_forgery except: :contact # 追加する
   def home
     if logged_in?
       @micropost  = current_user.microposts.build
@@ -10,8 +11,5 @@ class StaticPagesController < ApplicationController
   end
   
   def about
-  end
-
-  def contact
   end
 end

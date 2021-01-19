@@ -1,0 +1,3 @@
+// followボタンを押したときに実行されるjQueryを記述
+$("#follow_form").html("<%= escape_javascript(render('users/unfollow')) %>");
+$("#followers").html('<%= @user.followers.count %>');

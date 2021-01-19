@@ -15,16 +15,15 @@ Rails.application.routes.draw do
   get  '/signup',  to: 'users#new'
   post '/signup',  to: 'users#create'
 
-  get  '/patch',  to: 'users#patch'
-
-  get  '/renderd_page',    to: 'static_pages#renderd_page'
-
-  get  '/page',    to: 'static_pages#page'
-
   # get users/new, get users/1などのRESTフルセットを作成してくれる
-  resources :users
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
 
   resources :account_activations, only: [:edit]
   resources :password_resets,     only: [:new, :create, :edit, :update]
   resources :microposts,          only: [:create, :destroy]
+  resources :relationships,       only: [:create, :destroy]
 end

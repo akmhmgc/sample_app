@@ -39,4 +39,12 @@ class SiteLayoutTest < ActionDispatch::IntegrationTest
     get users_path
     assert_redirected_to login_url
   end
+
+  test "successful users followers and following" do
+    log_in_as(@user)
+    get root_path
+    assert_match @user.following.count.to_s, response.body
+    assert_match @user.followers.count.to_s, response.body
+    assert_select "a[href=?]", user_path(@user) ,text: "view my profile"
+  end
 end
