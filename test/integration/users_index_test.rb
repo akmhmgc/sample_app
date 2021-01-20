@@ -15,7 +15,7 @@ class UsersIndexTest < ActionDispatch::IntegrationTest
     first_page_of_users = User.paginate(page: 1)
     # ユーザー名のリンク,deleteのリンク（自分以外）が存在
     first_page_of_users.each do |user|
-      assert_select 'a[href=?]', user_path(user), text: user.name
+      assert_select 'a[href=?]', user_path(user), text: "#{user.name} (#{user.personal_id})"
       unless user == @admin
         assert_select 'a[href=?]', user_path(user), text: 'delete'
       end

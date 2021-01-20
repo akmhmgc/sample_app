@@ -15,6 +15,12 @@ class User < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 50 }
 
+  # personal idは英語＋数字の組み合わせにする
+  VALID_PERSONAL_ID_REGEX = /\A[a-zA-Z0-9]+\z/i
+  validates :personal_id, presence: true, length: { maximum: 50 },
+  format: { with: VALID_PERSONAL_ID_REGEX },
+  uniqueness: { case_sensitive: true }
+
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
@@ -90,11 +96,12 @@ class User < ApplicationRecord
   def feed
     # following_ids = following.map(&:id) の短縮系
     # SQL文を使用
+
     following_ids = "SELECT followed_id FROM relationships
                      WHERE follower_id = :user_id"
                      
-    Micropost.where("user_id IN (#{following_ids})
-                     OR user_id = :user_id", user_id: id)
+    # Micropost.where("user_id IN (#{following_ids}").including_replies(personal_id).or(Micropost.where("user_id = :user_id", user_id: id))
+    Micropost.where("user_id IN (#{following_ids})", user_id: id).including_replies(personal_id).or(Micropost.where("user_id = :user_id", user_id: id))
   end
 
   # ユーザーをフォローする
@@ -124,5 +131,3 @@ class User < ApplicationRecord
     self.activation_digest = User.digest(activation_token)
   end
 end
-
-# user = User.new(name:"akim",email:"akimu@akimu.com",password:"foobar",password_confirmation:"foobar")

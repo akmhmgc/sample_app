@@ -3,6 +3,8 @@ require 'test_helper'
 class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
   def setup
     @user = users(:michael)
+    @other_user1 = users(:archer)
+    @other_user2 = users(:lana)
   end
 
   test "micropost sidebar count" do
@@ -47,5 +49,28 @@ class MicropostsInterfaceTest < ActionDispatch::IntegrationTest
     # 違うユーザーのプロフィールにアクセスする
     get user_path(users(:archer))
     assert_select 'a', { text: 'delete', count: 0 }
+  end
+
+  test "sender and recipient only see reply feed" do
+    log_in_as(@user)
+    get root_path
+    content = "@"+"#{@other_user1.personal_id} You are the best!!"
+    post microposts_path, params: { micropost:
+      { content: content} }
+    # 自分自身が返したreplyは見られる
+    follow_redirect!
+    assert_match CGI.escapeHTML(content), response.body
+
+    # user1から見られる
+    delete logout_path
+    log_in_as(@other_user1)
+    get root_path
+    assert_match CGI.escapeHTML(content), response.body
+
+    # user2からは見えない
+    delete logout_path
+    log_in_as(@other_user2)
+    get root_path
+    assert_no_match CGI.escapeHTML(content), response.body
   end
 end

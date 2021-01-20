@@ -84,7 +84,7 @@ class UsersController < ApplicationController
     def user_params
       # 通して良いパラメータを表記
       params.require(:user).permit(:name, :email, :password,
-                                   :password_confirmation)
+                                   :password_confirmation, :personal_id)
     end
 
     # 正しいユーザーかどうかの確認
